@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Networking;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -11,7 +10,14 @@ public class PlayerController : NetworkBehaviour
 	{
 		if(!isLocalPlayer) return;
 
-		input = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal"), 0, CrossPlatformInputManager.GetAxis("Vertical"));
+		input = new Vector3
+		{
+			x = CrossPlatformInputManager.GetAxis("Horizontal"),
+			y = 0,
+			z = CrossPlatformInputManager.GetAxis("Vertical")
+		};
 		transform.Translate(input);
 	}
+
+	public override void OnStartLocalPlayer() { GetComponentInChildren<Camera>().enabled = true; }
 }
