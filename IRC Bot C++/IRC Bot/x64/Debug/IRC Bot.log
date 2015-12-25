@@ -1,7 +1,0 @@
-﻿  IRC Bot.cpp
-c:\users\harrison\desktop\coding\irc bot\irc bot c++\irc bot\irc bot.cpp(124): warning C4129: 'S': unrecognized character escape sequence
-c:\users\harrison\desktop\coding\irc bot\irc bot c++\irc bot\irc bot.cpp(136): warning C4129: 'S': unrecognized character escape sequence
-c:\users\harrison\desktop\coding\irc bot\irc bot c++\irc bot\irc bot.cpp(150): warning C4129: '.': unrecognized character escape sequence
-c:\users\harrison\desktop\coding\irc bot\irc bot c++\irc bot\irc bot.cpp(151): warning C4129: 'S': unrecognized character escape sequence
-c:\users\harrison\desktop\coding\irc bot\irc bot c++\irc bot\irc bot.cpp(189): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  IRC Bot.vcxproj -> C:\Users\Harrison\Desktop\Coding\IRC Bot\IRC Bot C++\x64\Debug\IRC Bot.exe
