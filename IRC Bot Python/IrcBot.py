@@ -3,6 +3,7 @@ import re
 from time import sleep
 
 
+# Replacement for enum
 class State:
     def __init__(self):
         pass
@@ -21,10 +22,7 @@ class IrcBot:
     channel = ""
     port = 0
     irc = None
-    names_to_op = ["Seanharrs", "SlayerSean",
-                   "AusBotFSharp", "Aus_Bot_FSharp",
-                   "AusBotCSharp", "Aus_Bot_CSharp",
-                   "Aus_Bot_CPlusPlus", "AusBotCPlusPlus"]
+    names_to_op = []
 
     def __init__(self, real, user, host, nick, server_name, channel_name, server_port=6667):
         global real_name
@@ -42,10 +40,14 @@ class IrcBot:
         server = server_name
         channel = channel_name
         port = server_port
+        names_to_op = ["Seanharrs", "SlayerSean",
+                       "AusBotFSharp", "Aus_Bot_FSharp",
+                       "AusBotCSharp", "Aus_Bot_CSharp",
+                       "AusBotCPlusPlus", "Aus_Bot_CPlusPlus"]
 
     def main(self):
         def send_data(command, param):
-            print "%s %s\r\n" % (command, param)
+            print("%s %s\r\n" % (command, param))
             irc.send("%s %s\r\n" % (command, param))
 
         def connect():
@@ -64,38 +66,33 @@ class IrcBot:
             send_data("JOIN", channel)
 
         def try_op(name):
-            index = names_to_op.index(name)
-            send_data("MODE", channel + " +o " + names_to_op[index])
+            for user in names_to_op:
+                if user == name:
+                    send_data("MODE", channel + " +o " + name)
 
         def check_server_messages(message):
             split_line = message.split(" ")
             if split_line[0] == "PING":
-                print message
+                print(message)
                 send_data("PONG", split_line[1])
 
             elif split_line[1] == "JOIN":
-                print message
-                name = re.match(r":([^!]*)!", message)
-                if not (name is None or name == nick_name):
-                    name = name.group(1)
+                print(message)
+                name = re.match(r":([^!]*)!", split_line[0]).group(1)
+                if not (name is None or name == nick_name or name == user_name):
                     send_data("PRIVMSG", channel + " :Hello, " + name)
+                    try_op(name)
 
             elif split_line[1] == "MODE":
-                print message
+                print(message)
                 name = re.search(r"([+-]o) (\S*)", message)
                 if name is None:
                     return State.CONTINUE
                 command = name.group(1)
                 name = name.group(2)
 
-                in_list = False
-                for user in names_to_op:
-                    if user == name:
-                        in_list = True
-                if command == "-o" and in_list:
+                if command == "-o":
                     try_op(name)
-                elif command == "+o" and not in_list:
-                    names_to_op.append(name)
 
             else:
                 return State.DO_NOTHING
@@ -103,28 +100,28 @@ class IrcBot:
             return State.CONTINUE
 
         def check_user_messages(server_message):
-            split_line = server_message.split(" ")
-            if split_line[len(split_line) - 1] == ":.botquit":
-                disconnect()
-                return State.RETURN
+            user_message_begin_index = 3
+            split_message = server_message.split(" ")
 
-            if split_line[len(split_line) - 1] == ":.get":
-                print server_message
-                match = re.match(":([^!]*)!.*?:.get ([\S ]*)", server_message)
-                name = match.group(1)
-                message = match.group(2).replace(" ", "_")
-                url = "https://en.wikipedia.org/wiki/" + message.lower()
-                send_data("PRIVMSG", channel + " :" + name + ": " + url)
+            if len(split_message) >= user_message_begin_index:
+                if split_message[user_message_begin_index] == ":.botquit":
+                    disconnect()
+                    return State.RETURN
 
-            else:
-                return State.DO_NOTHING
+                if split_message[user_message_begin_index] == ":.get":
+                    print(server_message)
+                    match = re.match(":([^!]*)!.*?:.get ([\S ]*)", server_message)
+                    name = match.group(1)
+                    message = match.group(2).replace(" ", "_")
+                    url = "https://en.wikipedia.org/wiki/" + message.lower()
+                    send_data("PRIVMSG", channel + " :" + name + ": " + url)
 
-            return State.CONTINUE
+            return State.DO_NOTHING
 
         stream_buffer = ""
+        count = 0
         try:
             connect()
-            count = 0
             while True:
                 if count == 4:
                     join()
@@ -145,9 +142,9 @@ class IrcBot:
                     if result == State.RETURN:
                         return
                 count += 1
-        except Exception, e:
+        except Exception as e:
             disconnect()
-            print str(e)
+            print(str(e))
             sleep(10)
             return self.main()
 
