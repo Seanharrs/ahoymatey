@@ -39,7 +39,7 @@ let disconnect (irc: TcpClient) (reader: StreamReader) (writer: StreamWriter) =
     reader.Close()
     writer.Close()
     irc.Close()
-    0
+    ()
 
 let checkservercommands (writer: StreamWriter) (line: string) =
     match line with

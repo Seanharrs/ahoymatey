@@ -1,10 +1,10 @@
-﻿import socket
-import re
+﻿from socket import socket
+from re import search as match_regex
 from time import sleep
 
 
 # Replacement for enum
-class State:
+class NextExecutionStep:
     def __init__(self):
         pass
 
@@ -52,7 +52,7 @@ class IrcBot:
 
         def connect():
             global irc
-            irc = socket.socket()
+            irc = socket()
             irc.connect((server, port))
             send_data("NICK", nick_name)
             args = "%s %s %s :%s" % (user_name, host_name, server, real_name)
@@ -78,16 +78,16 @@ class IrcBot:
 
             elif split_line[1] == "JOIN":
                 print(message)
-                name = re.match(r":([^!]*)!", split_line[0]).group(1)
+                name = match_regex(r":([^!]*)!", split_line[0]).group(1)
                 if not (name is None or name == nick_name or name == user_name):
                     send_data("PRIVMSG", channel + " :Hello, " + name)
                     try_op(name)
 
             elif split_line[1] == "MODE":
                 print(message)
-                name = re.search(r"([+-]o) (\S*)", message)
+                name = match_regex(r"([+-]o) (\S*)", message)
                 if name is None:
-                    return State.CONTINUE
+                    return NextExecutionStep.CONTINUE
                 command = name.group(1)
                 name = name.group(2)
 
@@ -95,9 +95,9 @@ class IrcBot:
                     try_op(name)
 
             else:
-                return State.DO_NOTHING
+                return NextExecutionStep.DO_NOTHING
 
-            return State.CONTINUE
+            return NextExecutionStep.CONTINUE
 
         def check_user_messages(server_message):
             user_message_begin_index = 3
@@ -106,17 +106,17 @@ class IrcBot:
             if len(split_message) >= user_message_begin_index:
                 if split_message[user_message_begin_index] == ":.botquit":
                     disconnect()
-                    return State.RETURN
+                    return NextExecutionStep.RETURN
 
                 if split_message[user_message_begin_index] == ":.get":
                     print(server_message)
-                    match = re.match(":([^!]*)!.*?:.get ([\S ]*)", server_message)
+                    match = match_regex(":([^!]*)!.*?:.get ([\S ]*)", server_message)
                     name = match.group(1)
                     message = match.group(2).replace(" ", "_")
                     url = "https://en.wikipedia.org/wiki/" + message.lower()
                     send_data("PRIVMSG", channel + " :" + name + ": " + url)
 
-            return State.DO_NOTHING
+            return NextExecutionStep.DO_NOTHING
 
         stream_buffer = ""
         count = 0
@@ -130,16 +130,15 @@ class IrcBot:
                 lines = stream_buffer.split("\n")
                 stream_buffer = lines.pop()
                 for line in lines:
-                    line = str(line)
-                    line = line.rstrip()
+                    line = str(line).rstrip()
                     result = check_server_messages(line)
-                    if result == State.RETURN:
+                    if result == NextExecutionStep.RETURN:
                         return
-                    if result == State.CONTINUE:
+                    if result == NextExecutionStep.CONTINUE:
                         continue
 
                     result = check_user_messages(line)
-                    if result == State.RETURN:
+                    if result == NextExecutionStep.RETURN:
                         return
                 count += 1
         except Exception as e:
@@ -150,6 +149,6 @@ class IrcBot:
 
 
 if __name__ == "__main__":
-    bot = IrcBot("Aus Bot Python v0", "AUS_Bot_Python", "AusBotHosting", "AusBotPython", "irc.quakenet.org",
-                 "#ausbot_test")
+    bot = IrcBot("Aus Bot Python v0", "AUS_Bot_Python", "AusBotHosting",
+                 "AusBotPython", "irc.quakenet.org", "#ausbot_test")
     bot.main()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -7,75 +6,18 @@ using System.Threading;
 
 namespace IRC_Bot
 {
-	/// <summary>Wrapper class containing a bot's name, server, channel, and other important variables</summary>
 	public class IrcBot
 	{
-		/// <summary>Additional information about the bot</summary>
-		public string RealName { get; }
-
-		/// <summary>The name used by the server to identify the bot</summary>
-		public string UserName { get; }
-
-		/// <summary>The name that appears on the sidebar of the IRC client</summary>
-		public string NickName { get; }
-
-		/// <summary>The name of the bot's host</summary>
-		public string Host { get; }
-
-		/// <summary>The server to connect to</summary>
-		public string Server { get; }
-
-		/// <summary>The channel to connect to</summary>
-		public string Channel { get; }
-
-		/// <summary>The port the server uses</summary>
-		public int Port { get; }
-
-		public List<string> namesToOp { get; set; } = new List<string>
-		{
-			"Seanharrs", "SlayerSean",
-			"AusBotPython", "Aus_Bot_Python",
-			"AusBotFSharp", "Aus_Bot_FSharp",
-			"AusBotCPlusPlus", "Aus_Bot_CPlusPlus"
-		};
-
-		/// <summary>Initialises a new IRC Bot with the parameters provided</summary>
-		/// <param name="real">Additional information about the bot</param>
-		/// <param name="user">The name used by the esrver to identify the bot</param>
-		/// <param name="host">The bot's host name</param>
-		/// <param name="nick">The name that appears on the sidebar of the IRC client</param>
-		/// <param name="server">The server to connect to</param>
-		/// <param name="channel">The channel to connect to</param>
-		/// <param name="port">The port the server uses, default 6667</param>
-		public IrcBot(string real, string user, string host, string nick, string server, string channel, int port = 6667)
-		{
-			RealName = real;
-			UserName = user;
-			Host = host;
-			NickName = nick;
-			Server = server;
-			Channel = channel;
-			Port = port;
-		}
-	}
-
-	public class Program
-	{
-		private enum State
-		{
-			DoNothing,
-			Continue,
-			Return
-		};
+		private enum NextExecutionStep { DoNothing, Continue, Return };
 		
-		private static IrcBot bot;
+		private static BotDetails bot;
 		private static TcpClient irc;
 		private static StreamWriter writer;
 		private static StreamReader reader;
 		
 		private static void Main()
 		{
-			bot = new IrcBot("Aus Bot CSharp v0", "AUS_Bot_CSharp", "AusBotHosting", "AusBotCSharp", "irc.quakenet.org", "#ausbot_test");
+			bot = new BotDetails("Aus Bot CSharp v0", "AUS_Bot_CSharp", "AusBotHosting", "AusBotCSharp", "irc.quakenet.org", "#ausbot_test");
 			try
 			{
 				OpenConnection();
@@ -92,15 +34,15 @@ namespace IRC_Bot
 						if(count == 4) SendData("JOIN", bot.Channel);
 						switch(CheckServerMessages(line))
 						{
-							case State.Return: return;
-							case State.Continue: continue;
-							case State.DoNothing: break;
+							case NextExecutionStep.Return: return;
+							case NextExecutionStep.Continue: continue;
+							case NextExecutionStep.DoNothing: break;
 						}
 						switch(CheckUserMessages(line))
 						{
-							case State.Return: return;
-							case State.Continue: continue;
-							case State.DoNothing: break;
+							case NextExecutionStep.Return: return;
+							case NextExecutionStep.Continue: continue;
+							case NextExecutionStep.DoNothing: break;
 						}
 						++count;
 					}
@@ -117,7 +59,7 @@ namespace IRC_Bot
 		}
 
 		/// <summary>Checks for important messages from the server</summary>
-		private static State CheckServerMessages(string line)
+		private static NextExecutionStep CheckServerMessages(string line)
 		{
 			if(line.Contains("PING"))
 			{
@@ -142,18 +84,18 @@ namespace IRC_Bot
 				if(line.Contains("-o") && bot.namesToOp.Contains(name)) TryOp(name);
 				else if(line.Contains("+o") && !bot.namesToOp.Contains(name)) bot.namesToOp.Add(name);
 			}
-			else return State.DoNothing;
+			else return NextExecutionStep.DoNothing;
 			
-			return State.Continue;
+			return NextExecutionStep.Continue;
 		}
 
 		/// <summary>Checks for commands given from users in the channel</summary>
-		private static State CheckUserMessages(string line)
+		private static NextExecutionStep CheckUserMessages(string line)
 		{
 			if(line.Contains(".botquit"))
 			{
 				CloseConnection();
-				return State.Return;
+				return NextExecutionStep.Return;
 			}
 			if(line.Contains(".get"))
 			{
@@ -164,9 +106,9 @@ namespace IRC_Bot
 				string url = "https://en.wikipedia.org/wiki/" + query.ToLower();
 				SendData("PRIVMSG", bot.Channel + " :" + name + ": " + url);
 			}
-			else return State.DoNothing;
+			else return NextExecutionStep.DoNothing;
 
-			return State.Continue;
+			return NextExecutionStep.Continue;
 		}
 
 		/// <summary>Makes a user a channel operator if they are supposed to be</summary>
