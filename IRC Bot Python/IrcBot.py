@@ -46,45 +46,52 @@ class IrcBot:
                        "AusBotCPlusPlus", "Aus_Bot_CPlusPlus"]
 
     def main(self):
-        def send_data(command, param):
-            print("%s %s\r\n" % (command, param))
-            irc.send("%s %s\r\n" % (command, param))
+        encoding = "utf-8"
+
+        def encode_message(text):
+            return text.encode(encoding)
+
+        def decode_message(text):
+            return text.decode(encoding)
+
+        def send_data(command):
+            command = encode_message(command + "\n")
+            print(command)
+            irc.send(command)
 
         def connect():
             global irc
             irc = socket()
             irc.connect((server, port))
-            send_data("NICK", nick_name)
-            args = "%s %s %s :%s" % (user_name, host_name, server, real_name)
-            send_data("USER", args)
+            send_data("NICK %s" % nick_name)
+            # let the server register the nick command before sending the user command
+            sleep(1)
+            send_data("USER %s %s %s :%s" % (user_name, host_name, server, real_name))
 
         def disconnect():
             global irc
             irc.close()
 
         def join():
-            send_data("JOIN", channel)
+            send_data("JOIN %s" % channel)
 
         def try_op(name):
             for user in names_to_op:
                 if user == name:
-                    send_data("MODE", channel + " +o " + name)
+                    send_data("MODE %s" % (channel + " +o " + name))
 
         def check_server_messages(message):
             split_line = message.split(" ")
             if split_line[0] == "PING":
-                print(message)
-                send_data("PONG", split_line[1])
+                send_data("PONG %s" % split_line[1])
 
             elif split_line[1] == "JOIN":
-                print(message)
                 name = match_regex(r":([^!]*)!", split_line[0]).group(1)
                 if not (name is None or name == nick_name or name == user_name):
-                    send_data("PRIVMSG", channel + " :Hello, " + name)
+                    send_data("PRIVMSG %s" % (channel + " :Hello, " + name))
                     try_op(name)
 
             elif split_line[1] == "MODE":
-                print(message)
                 name = match_regex(r"([+-]o) (\S*)", message)
                 if name is None:
                     return NextExecutionStep.CONTINUE
@@ -114,23 +121,33 @@ class IrcBot:
                     name = match.group(1)
                     message = match.group(2).replace(" ", "_")
                     url = "https://en.wikipedia.org/wiki/" + message.lower()
-                    send_data("PRIVMSG", channel + " :" + name + ": " + url)
+                    send_data("PRIVMSG %s" % (channel + " :" + name + ": " + url))
 
             return NextExecutionStep.DO_NOTHING
 
         stream_buffer = ""
         count = 0
+        joined = False
         try:
             connect()
             while True:
-                if count == 4:
+                # join after 4 messages as per IRC protocol
+                if not joined and count >= 5:
+                    joined = True
                     join()
 
-                stream_buffer = stream_buffer + irc.recv(1024)
+                stream_buffer = stream_buffer + decode_message(irc.recv(1024))
                 lines = stream_buffer.split("\n")
+                print(lines)
+                # the last element of the list (empty or un-finished message) becomes the buffer
                 stream_buffer = lines.pop()
+                print(stream_buffer)
+                print(lines)
                 for line in lines:
-                    line = str(line).rstrip()
+                    if "PING" not in line:
+                        count += 1
+                    # remove any trailing whitespace from the string (\t, \r, spaces, etc.)
+                    line = line.rstrip()
                     result = check_server_messages(line)
                     if result == NextExecutionStep.RETURN:
                         return
@@ -140,7 +157,6 @@ class IrcBot:
                     result = check_user_messages(line)
                     if result == NextExecutionStep.RETURN:
                         return
-                count += 1
         except Exception as e:
             disconnect()
             print(str(e))

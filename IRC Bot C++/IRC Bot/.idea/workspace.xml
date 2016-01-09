@@ -41,68 +41,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IrcBot.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/IrcBot.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="102" column="20" selection-start-line="102" selection-start-column="20" selection-end-line="102" selection-end-column="20" />
-              <folding>
-                <element signature="e#1044#1327#0" expanded="false" />
-                <element signature="e#1329#3417#0" expanded="false" />
-                <element signature="e#3419#3661#0" expanded="false" />
-                <element signature="e#3728#4503#0" expanded="false" />
-                <element signature="e#4505#5068#0" expanded="false" />
-                <element signature="e#5070#5592#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IrcBot.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/IrcBot.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4180602">
-              <caret line="25" column="20" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BotDetails.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BotDetails.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BotDetails.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BotDetails.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProjectIncludes.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ProjectIncludes.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.18394649">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -114,12 +57,12 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/main.cpp" />
-        <option value="$PROJECT_DIR$/BotDetails.cpp" />
         <option value="$PROJECT_DIR$/ProjectIncludes.h" />
+        <option value="$PROJECT_DIR$/BotDetails.cpp" />
         <option value="$PROJECT_DIR$/BotDetails.h" />
-        <option value="$PROJECT_DIR$/IrcBot.h" />
         <option value="$PROJECT_DIR$/IrcBot.cpp" />
+        <option value="$PROJECT_DIR$/IrcBot.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -234,7 +177,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32792208" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -242,7 +185,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39935064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -257,41 +200,12 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="12" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="25" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/IrcBot.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
-          <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/IrcBot.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -320,7 +234,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -345,12 +258,13 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
           <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -383,7 +297,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -408,12 +321,13 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
           <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -446,7 +360,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -471,12 +384,13 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
           <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -509,7 +423,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -534,12 +447,13 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="249" selection-end-column="0" />
           <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -572,7 +486,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -597,12 +510,13 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -663,33 +577,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
+    <entry file="file://C:/cygwin64/lib/gcc/x86_64-pc-cygwin/4.9.3/include/c++/thread">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.33206832">
+          <caret line="280" column="0" selection-start-line="280" selection-start-column="0" selection-end-line="280" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/IrcBot.cpp">
+    <entry file="file://C:/cygwin64/lib/gcc/x86_64-pc-cygwin/4.9.3/include/c++/bits/regex.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="102" column="20" selection-start-line="102" selection-start-column="20" selection-end-line="102" selection-end-column="20" />
-          <folding>
-            <element signature="e#1044#1327#0" expanded="false" />
-            <element signature="e#1329#3417#0" expanded="false" />
-            <element signature="e#3419#3661#0" expanded="false" />
-            <element signature="e#3728#4503#0" expanded="false" />
-            <element signature="e#4505#5068#0" expanded="false" />
-            <element signature="e#5070#5592#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.33206832">
+          <caret line="1621" column="0" selection-start-line="1621" selection-start-column="0" selection-end-line="1621" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/IrcBot.h">
+    <entry file="file://C:/cygwin64/lib/gcc/x86_64-pc-cygwin/4.9.3/include/c++/bits/stl_vector.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4180602">
-          <caret line="25" column="20" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="324" column="0" selection-start-line="324" selection-start-column="0" selection-end-line="324" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ProjectIncludes.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39848197">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BotDetails.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="60" selection-start-line="8" selection-start-column="60" selection-end-line="8" selection-end-column="60" />
           <folding />
         </state>
       </provider>
@@ -697,23 +616,39 @@
     <entry file="file://$PROJECT_DIR$/BotDetails.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="20" selection-start-line="6" selection-start-column="20" selection-end-line="6" selection-end-column="20" />
+          <caret line="3" column="33" selection-start-line="3" selection-start-column="33" selection-end-line="3" selection-end-column="33" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BotDetails.h">
+    <entry file="file://$PROJECT_DIR$/IrcBot.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <caret line="28" column="26" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ProjectIncludes.h">
+    <entry file="file://$PROJECT_DIR$/IrcBot.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <caret line="226" column="0" selection-start-line="226" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
+          <folding>
+            <element signature="e#924#1209#0" expanded="false" />
+            <element signature="e#1211#2494#0" expanded="false" />
+            <element signature="e#2496#2750#0" expanded="false" />
+            <element signature="e#2825#3692#0" expanded="false" />
+            <element signature="e#3694#4425#0" expanded="false" />
+            <element signature="e#4427#4896#0" expanded="false" />
+            <element signature="e#5461#5948#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18394649">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>

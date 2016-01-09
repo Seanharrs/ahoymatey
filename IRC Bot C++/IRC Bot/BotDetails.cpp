@@ -1,7 +1,7 @@
 #include "BotDetails.h"
 
-BotDetails::BotDetails(const char *real, const char *user, const char *host, const char *nick,
-           const char *server, const char *channel, int port)
+BotDetails::BotDetails(string real, string user, string host, string nick,
+           string server, string channel, int port)
 {
 	realName = real;
 	userName = user;
@@ -12,18 +12,18 @@ BotDetails::BotDetails(const char *real, const char *user, const char *host, con
 	serverPort = port;
 }
 
-const char * BotDetails::getRealName() { return realName; }
+string BotDetails::getRealName() { return realName; }
 
-const char* BotDetails::getUserName() { return userName; }
+string BotDetails::getUserName() { return userName; }
 
-const char* BotDetails::getNickName() { return nickName; }
+string BotDetails::getNickName() { return nickName; }
 
-const char* BotDetails::getHostName() { return hostName; }
+string BotDetails::getHostName() { return hostName; }
 
-const char* BotDetails::getServer() { return serverName; }
+string BotDetails::getServer() { return serverName; }
 
-const char* BotDetails::getChannel() { return channelName; }
+string BotDetails::getChannel() { return channelName; }
 
 int BotDetails::getPort() { return serverPort; }
 
-vector<const char*> BotDetails::getAdminNames() { return names_to_op; }
+vector<string> BotDetails::getAdminNames() { return names_to_op; }

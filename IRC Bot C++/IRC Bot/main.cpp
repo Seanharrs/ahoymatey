@@ -7,3 +7,5 @@ int main()
     ausBot.run();
     return 0;
 }
+
+//TODO change all char[1024] to std::ostringstream to ensure no buffer overflow breaks the program

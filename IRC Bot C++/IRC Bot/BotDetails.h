@@ -5,28 +5,28 @@
 class BotDetails
 {
 	public:
-		BotDetails(const char *real, const char *user, const char *host, const char *nick,
-		           const char *server, const char *channel, int port);
+		BotDetails(string real, string user, string host, string nick,
+		           string server, string channel, int port);
 
-		const char* getRealName();
-		const char* getUserName();
-		const char* getNickName();
-		const char* getHostName();
-		const char* getServer();
-		const char* getChannel();
+		string getRealName();
+		string getUserName();
+		string getNickName();
+		string getHostName();
+		string getServer();
+		string getChannel();
 		int getPort();
-		vector<const char*> getAdminNames();
+		vector<string> getAdminNames();
 
 	private:
-		const char *realName;
-		const char *userName;
-		const char *nickName;
-		const char *hostName;
-		const char *serverName;
-		const char *channelName;
+		string realName;
+		string userName;
+		string nickName;
+		string hostName;
+		string serverName;
+		string channelName;
 		int serverPort;
 
-		vector<const char *> names_to_op =
+		vector<string> names_to_op =
 		{
 				"Seanharrs", "SlayerSean",
 				"AusBotPython", "Aus_Bot_Python",
