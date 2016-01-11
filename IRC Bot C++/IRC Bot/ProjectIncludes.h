@@ -9,7 +9,11 @@
 #include <sys/unistd.h>
 #include <netdb.h>
 
-//import static members for string and vector to avoid having to write std:: every time
-//a string or vector type is used
+//import static members to avoid having to write std:: every time one is used
+//only useful when used often or want to make code a bit cleaner (remove for optimisation)
 using std::string;
 using std::vector;
+using std::ostringstream;
+using std::cout;
+using std::exception;
+using std::regex;

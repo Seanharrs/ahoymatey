@@ -27,6 +27,7 @@ class IrcBot
 		NextExecutionStep processData(const vector<char> &, int &);
 		void sendConnectionDetails();
 		NextExecutionStep readFromServer(vector<char> &, int &, int &);
+		void sleep(int time) { std::this_thread::sleep_for(std::chrono::seconds(time)); }
 
 		int irc; //the socket
 		struct hostent *server;

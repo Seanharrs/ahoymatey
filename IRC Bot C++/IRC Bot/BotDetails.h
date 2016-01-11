@@ -6,16 +6,25 @@ class BotDetails
 {
 	public:
 		BotDetails(string real, string user, string host, string nick,
-		           string server, string channel, int port);
+		           string server, string channel, int port)
+		{
+			realName = real;
+			userName = user;
+			hostName = host;
+			nickName = nick;
+			serverName = server;
+			channelName = channel;
+			serverPort = port;
+		}
 
-		string getRealName();
-		string getUserName();
-		string getNickName();
-		string getHostName();
-		string getServer();
-		string getChannel();
-		int getPort();
-		vector<string> getAdminNames();
+		string getRealName() { return realName; }
+		string getUserName() { return userName; }
+		string getNickName() { return nickName; }
+		string getHostName() { return hostName; }
+		string getServer() { return serverName; }
+		string getChannel() { return channelName; }
+		int getPort() { return serverPort; }
+		vector<string> getAdminNames() { return names_to_op; }
 
 	private:
 		string realName;

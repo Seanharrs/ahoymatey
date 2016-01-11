@@ -24,11 +24,11 @@ IrcBot::IrcBot(string real, string user, string host, string nick, string server
 
 void IrcBot::sendData(const char *command, const char *param)
 {
-	char message[1024];
-	sprintf(message, "%s %s\n", command, param);
-	std::cout << message << "\n";
+	ostringstream message;
+	message << command << " " << param << "\n";
+	cout << message.str() << "\n";
 	signal(SIGPIPE, SIG_IGN); //ignore broken sigpipe issues so program won't crash
-	send(irc, message, strlen(message), 0);
+	send(irc, message.str().c_str(), strlen(message.str().c_str()), 0);
 }
 
 void IrcBot::openConnection()
@@ -41,14 +41,14 @@ void IrcBot::openConnection()
 	if(irc < 0)
 	{
 		perror("socket");
-		throw std::exception();
+		throw exception();
 	}
 
 	server = gethostbyname(details.getServer().c_str());
 	if(server == NULL)
 	{
 		perror("server");
-		throw std::exception();
+		throw exception();
 	}
 
 	//ensure serv_addr is "empty" by making every byte have a value of 0
@@ -68,7 +68,7 @@ void IrcBot::openConnection()
 	if(status < 0)
 	{
 		perror("connect");
-		throw std::exception();
+		throw exception();
 	}
 }
 
@@ -77,9 +77,9 @@ void IrcBot::tryOp(const string name)
 	for(string nick : details.getAdminNames())
 		if(name == nick)
 		{
-			char opMessage[1024];
-			sprintf(opMessage, "%s %s %s", details.getChannel().c_str(), "+o", name.c_str());
-			sendData("MODE", opMessage);
+			ostringstream opMessage;
+			opMessage << details.getChannel() << " +o " << name;
+			sendData("MODE", opMessage.str().c_str());
 		}
 }
 
@@ -88,32 +88,25 @@ void IrcBot::join() { sendData("JOIN", details.getChannel().c_str()); }
 IrcBot::NextExecutionStep IrcBot::checkServerMessages(const string &line)
 {
 	std::smatch match;
+	regex ping = regex(R"(PING (:\S*))");
+	regex join = regex(R"(:([^!]*)!.*?JOIN)");
 
-	if(regex_search(line, match, std::regex(R"(PING (:\S*))")))
+	if(regex_search(line, match, ping))
 		sendData("PONG", match.str(1).c_str());
 
-	else if(regex_search(line, match, std::regex(R"(:([^!]*)!.*?JOIN)")))
+	else if(regex_search(line, match, join))
 	{
-		const string nick = details.getNickName();
-		const string name = (string)match.str(1);
+		string nick = details.getNickName();
+		string name = (string)match.str(1);
 		if(name != nick)
 		{
 			//welcome the user
-			char param[1024];
-			sprintf(param, "%s :Hello, %s", details.getChannel().c_str(), name.c_str());
-			sendData("PRIVMSG", param);
+			ostringstream param;
+			param << details.getChannel() << " :Hello, " << name;
+			sendData("PRIVMSG", param.str().c_str());
 			tryOp(name);
 		}
 	}
-	//TODO MODE command
-//	else if(regex_search(line, match, std::regex(R"([+-]o (\S*))")))
-//	{
-//		for(auto x : match)
-//			std::cout << x;
-//		std::cout << "HEY!";
-//		//sendData("MODE", );
-//		//tryOp(/*name*/);
-//	}
 	else
 		return NextExecutionStep::DO_NOTHING;
 
@@ -123,22 +116,24 @@ IrcBot::NextExecutionStep IrcBot::checkServerMessages(const string &line)
 IrcBot::NextExecutionStep IrcBot::checkUserMessages(const string &line)
 {
 	std::smatch match;
+	regex botQuit = regex(R"(.*?\.botquit.*?)");
+	regex wikiSearch = regex(R"(:([^!]*)!.*?:.get ([\S ]*))");
 
-	if(regex_search(line, match, std::regex(R"(.*?\.botquit.*?)")))
+	if(regex_search(line, match, botQuit))
 	{
 		shutdown(irc, SHUT_RDWR);
 		return NextExecutionStep::RETURN;
 	}
-	else if(regex_search(line, match, std::regex(R"(:([^!]*)!.*?:.get ([\S ]*))")))
+	else if(regex_search(line, match, wikiSearch))
 	{
 		string base = "https://en.wikipedia.org/wiki/";
 		string name = (string)match.str(1);
 		string topic = (string)match.str(2);
-		char url[1024];
-		sprintf(url, "%s%s", base.c_str(), topic.c_str());
-		char param[1024];
-		sprintf(param, "%s :%s: %s", details.getChannel().c_str(), name.c_str(), url);
-		sendData("PRIVMSG", param);
+		ostringstream url;
+		url << base << topic;
+		ostringstream param;
+		param << details.getChannel() << " :" << name << ": " << url.str();
+		sendData("PRIVMSG", param.str().c_str());
 	}
 	else
 		return NextExecutionStep::DO_NOTHING;
@@ -187,19 +182,19 @@ void IrcBot::sendConnectionDetails()
 	//send nickname to server
 	sendData("NICK", details.getNickName().c_str());
 	//give the server time to register the "NICK" command
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-	char param[1024];
-	//send username, hostname, and realname to server
-	sprintf(param, "%s %s %s :%s", details.getUserName().c_str(), details.getHostName().c_str(),
-	        details.getServer().c_str(), details.getRealName().c_str());
-	sendData("USER", param);
+	sleep(1);
+	ostringstream param;
+	//send username, hostname, and realname to the server
+	param << details.getUserName() << " " << details.getHostName()
+		  << " " << details.getServer() << " :" << details.getRealName();
+	sendData("USER", param.str().c_str());
 }
 
 IrcBot::NextExecutionStep IrcBot::readFromServer(vector<char> &buffer, int &messageCount, int &failCount)
 {
 	//recieve data from server, put data into recvBuffer, no flags (hence 0 argument)
 	int res = recv(irc, buffer.data(), buffer.size(), 0);
-	std::cout << buffer.data();
+	cout << buffer.data();
 	switch(res)
 	{
 		//recv returned error
@@ -208,12 +203,12 @@ IrcBot::NextExecutionStep IrcBot::readFromServer(vector<char> &buffer, int &mess
 			perror("Failed to receive data from server.");
 			//terminate program if recv fails 5 times in a row
 			if(++failCount >= 5)
-				throw std::exception();
+				throw exception();
 			break;
 			//connection was closed
 		case 0:
-			std::cout << "Connection closed gracefully (but unexpectedly)!" << "\n";
-			throw new std::exception();
+			cout << "Connection closed gracefully (but unexpectedly)!" << "\n";
+			throw new exception();
 			//successfully recieved data from server
 		default:
 			//reset failCount because data was successfully received
@@ -252,12 +247,12 @@ void IrcBot::run()
 	}
 	catch(...)
 	{
-		std::cout << "An unexpected exception occurred!" << "\n";
+		cout << "An unexpected exception occurred!" << "\n";
 		//disable both read and write permissions on the socket
 		shutdown(irc, SHUT_RDWR);
 		//close the socket
 		close(irc);
-		std::this_thread::sleep_for(std::chrono::seconds(10));
+		sleep(10);
 		run();
 	}
 }
