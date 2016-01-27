@@ -59,6 +59,8 @@ namespace IRC_Bot
 		}
 
 		/// <summary>Checks for important messages from the server</summary>
+		/// <param name="line">A line of text (message) from the server</param>
+		/// <returns>Whether to skip to the next iteration or continue current loop</returns>
 		private static NextExecutionStep CheckServerMessages(string line)
 		{
 			if(line.Contains("PING"))
@@ -90,6 +92,8 @@ namespace IRC_Bot
 		}
 
 		/// <summary>Checks for commands given from users in the channel</summary>
+		/// <param name="line">A line of text (message) from the server</param>
+		/// <returns>Whether to skip to the next iteration or continue current loop</returns>
 		private static NextExecutionStep CheckUserMessages(string line)
 		{
 			if(line.Contains(".botquit"))
