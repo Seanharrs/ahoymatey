@@ -2,7 +2,7 @@
 
 //default values for all BotDetails variables that are assigned in the constructor
 #define REAL "Aus Bot CPlusPlus v0"
-#define USER "AUS_Bot_CPlusPlus"
+#define USER "Aus_Bot_CPlusPlus"
 #define HOST "AusBotHosting"
 #define NICK "AusBotCPlusPlus"
 #define SERVER "irc.quakenet.org"
@@ -107,8 +107,7 @@ IrcBot::NextExecutionStep IrcBot::checkServerMessages(const string &line)
 			tryOp(name);
 		}
 	}
-	else
-		return NextExecutionStep::DO_NOTHING;
+	else return NextExecutionStep::DO_NOTHING;
 
 	return NextExecutionStep::CONTINUE;
 }
@@ -116,15 +115,16 @@ IrcBot::NextExecutionStep IrcBot::checkServerMessages(const string &line)
 IrcBot::NextExecutionStep IrcBot::checkUserMessages(const string &line)
 {
 	std::smatch match;
-	regex botQuit = regex(R"(.*?\.botquit.*?)");
-	regex wikiSearch = regex(R"(:([^!]*)!.*?:.get ([\S ]*))");
+	regex quit = regex(R"(.*?\.botquit.*?)");
+	regex search = regex(R"(:([^!]*)!.*?:\.get ([\S ]*))");
+	regex mode = regex(R"(.*?MODE #[^ ]* -o (\S*))");
 
-	if(regex_search(line, match, botQuit))
+	if(regex_search(line, match, quit))
 	{
 		shutdown(irc, SHUT_RDWR);
 		return NextExecutionStep::RETURN;
 	}
-	else if(regex_search(line, match, wikiSearch))
+	else if(regex_search(line, match, search))
 	{
 		string base = "https://en.wikipedia.org/wiki/";
 		string name = (string)match.str(1);
@@ -135,8 +135,10 @@ IrcBot::NextExecutionStep IrcBot::checkUserMessages(const string &line)
 		param << details.getChannel() << " :" << name << ": " << url.str();
 		sendData("PRIVMSG", param.str().c_str());
 	}
-	else
-		return NextExecutionStep::DO_NOTHING;
+	else if(regex_search(line, match, mode))
+		tryOp((string)match.str(1));
+
+	else return NextExecutionStep::DO_NOTHING;
 
 	return NextExecutionStep::CONTINUE;
 }

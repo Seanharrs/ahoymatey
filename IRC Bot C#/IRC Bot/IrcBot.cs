@@ -17,7 +17,7 @@ namespace IRC_Bot
 		
 		private static void Main()
 		{
-			bot = new BotDetails("Aus Bot CSharp v0", "AUS_Bot_CSharp", "AusBotHosting", "AusBotCSharp", "irc.quakenet.org", "#ausbot_test");
+			bot = new BotDetails("Aus Bot CSharp v0", "Aus_Bot_CSharp", "AusBotHosting", "AusBotCSharp", "irc.quakenet.org", "#ausbot_test");
 			try
 			{
 				OpenConnection();
@@ -58,6 +58,25 @@ namespace IRC_Bot
 			finally { CloseConnection(); }
 		}
 
+		/// <summary>Initialises the connection to the server, the reader, and the writer</summary>
+		private static void OpenConnection()
+		{
+			irc = new TcpClient(bot.Server, bot.Port);
+			NetworkStream stream = irc.GetStream();
+			reader = new StreamReader(stream);
+			writer = new StreamWriter(stream);
+		}
+
+		/// <summary>Sends a command to the server</summary>
+		/// <param name="command">The command being sent</param>
+		/// <param name="param">The arguments required for the command</param>
+		private static void SendData(string command, string param)
+		{
+			writer.WriteLine(command + " " + param);
+			Console.WriteLine(command + " " + param);
+			writer.Flush();
+		}
+
 		/// <summary>Checks for important messages from the server</summary>
 		/// <param name="line">A line of text (message) from the server</param>
 		/// <returns>Whether to skip to the next iteration or continue current loop</returns>
@@ -78,14 +97,6 @@ namespace IRC_Bot
 					SendData("PRIVMSG", bot.Channel + " :Hello, " + name);
 				}
 			}
-			else if(line.Contains("MODE"))
-			{
-				Console.WriteLine(line);
-				string name = Regex.Match(line, @"[+-]o (\S*)").Groups[1].Value;
-
-				if(line.Contains("-o") && bot.namesToOp.Contains(name)) TryOp(name);
-				else if(line.Contains("+o") && !bot.namesToOp.Contains(name)) bot.namesToOp.Add(name);
-			}
 			else return NextExecutionStep.DoNothing;
 			
 			return NextExecutionStep.Continue;
@@ -96,19 +107,24 @@ namespace IRC_Bot
 		/// <returns>Whether to skip to the next iteration or continue current loop</returns>
 		private static NextExecutionStep CheckUserMessages(string line)
 		{
-			if(line.Contains(".botquit"))
-			{
-				CloseConnection();
-				return NextExecutionStep.Return;
-			}
+			if(line.Contains(".botquit")) return NextExecutionStep.Return;
+
 			if(line.Contains(".get"))
 			{
 				Console.WriteLine(line);
-				Match match = Regex.Match(line, @":([^!]*)!.*?:.get ([\S ]*)");
+				Match match = Regex.Match(line, @":([^!]*)!.*?:\.get ([\S ]*)");
 				string name = match.Groups[1].Value;
 				string query = match.Groups[2].Value.Replace(' ', '_');
 				string url = "https://en.wikipedia.org/wiki/" + query.ToLower();
 				SendData("PRIVMSG", bot.Channel + " :" + name + ": " + url);
+			}
+			else if(line.Contains("MODE") && !line.Contains("PRIVMSG"))
+			{
+				Console.WriteLine(line);
+				string name = Regex.Match(line, @"-o (\S*)").Groups[1].Value;
+
+				if(bot.AdminNames.Contains(name))
+					TryOp(name);
 			}
 			else return NextExecutionStep.DoNothing;
 
@@ -121,17 +137,8 @@ namespace IRC_Bot
 		{
 			if(user == bot.NickName) return;
 
-			int opIndex = bot.namesToOp.IndexOf(user);
-			if(opIndex >= 0) SendData("MODE", bot.Channel + " +o " + bot.namesToOp[opIndex]);
-		}
-
-		/// <summary>Initialises the connection to the server, the reader, and the writer</summary>
-		private static void OpenConnection()
-		{
-			irc = new TcpClient(bot.Server, bot.Port);
-			NetworkStream stream = irc.GetStream();
-			reader = new StreamReader(stream);
-			writer = new StreamWriter(stream);
+			int opIndex = bot.AdminNames.IndexOf(user);
+			if(opIndex >= 0) SendData("MODE", bot.Channel + " +o " + bot.AdminNames[opIndex]);
 		}
 
 		/// <summary>Closes the reader, writer, and connection to the server</summary>
@@ -140,16 +147,6 @@ namespace IRC_Bot
 			writer.Close();
 			reader.Close();
 			irc.Close();
-		}
-
-		/// <summary>Sends a command to the server</summary>
-		/// <param name="command">The command being sent</param>
-		/// <param name="param">The arguments required for the command</param>
-		private static void SendData(string command, string param)
-		{
-			writer.WriteLine(command + " " + param);
-			Console.WriteLine(command + " " + param);
-			writer.Flush();
 		}
 	}
 }

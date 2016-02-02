@@ -24,7 +24,7 @@ class BotDetails
 		string getServer() { return serverName; }
 		string getChannel() { return channelName; }
 		int getPort() { return serverPort; }
-		vector<string> getAdminNames() { return names_to_op; }
+		vector<string> getAdminNames() { return adminNames; }
 
 	private:
 		string realName;
@@ -35,11 +35,12 @@ class BotDetails
 		string channelName;
 		int serverPort;
 
-		vector<string> names_to_op =
+		vector<string> adminNames =
 		{
 				"Seanharrs", "SlayerSean",
 				"AusBotPython", "Aus_Bot_Python",
 				"AusBotCSharp", "Aus_Bot_CSharp",
-				"AusBotFSharp", "Aus_Bot_FSharp"
+				"AusBotFSharp", "Aus_Bot_FSharp",
+				"AusBotRuby", "Aus_Bot_Ruby"
 		};
 };

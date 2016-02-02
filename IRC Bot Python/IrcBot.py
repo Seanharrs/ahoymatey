@@ -22,7 +22,7 @@ class IrcBot:
     channel = ""
     port = 0
     irc = None
-    names_to_op = []
+    admin_names = []
 
     def __init__(self, real, user, host, nick, server_name, channel_name, server_port=6667):
         global real_name
@@ -32,7 +32,7 @@ class IrcBot:
         global server
         global channel
         global port
-        global names_to_op
+        global admin_names
         real_name = real
         user_name = user
         host_name = host
@@ -40,10 +40,11 @@ class IrcBot:
         server = server_name
         channel = channel_name
         port = server_port
-        names_to_op = ["Seanharrs", "SlayerSean",
+        admin_names = ["Seanharrs", "SlayerSean",
                        "AusBotFSharp", "Aus_Bot_FSharp",
                        "AusBotCSharp", "Aus_Bot_CSharp",
-                       "AusBotCPlusPlus", "Aus_Bot_CPlusPlus"]
+                       "AusBotCPlusPlus", "Aus_Bot_CPlusPlus",
+                       "AusBotRuby", "Aus_Bot_Ruby"]
 
     def main(self):
         encoding = "utf-8"
@@ -76,7 +77,7 @@ class IrcBot:
             send_data("JOIN %s" % channel)
 
         def try_op(name):
-            for user in names_to_op:
+            for user in admin_names:
                 if user == name:
                     send_data("MODE %s" % (channel + " +o " + name))
 
@@ -91,33 +92,28 @@ class IrcBot:
                     send_data("PRIVMSG %s" % (channel + " :Hello, " + name))
                     try_op(name)
 
-            elif split_line[1] == "MODE":
-                name = match_regex(r"([+-]o) (\S*)", message)
-                if name is None:
-                    return NextExecutionStep.CONTINUE
-                command = name.group(1)
-                name = name.group(2)
-
-                if command == "-o":
-                    try_op(name)
-
             else:
                 return NextExecutionStep.DO_NOTHING
 
             return NextExecutionStep.CONTINUE
 
-        def check_user_messages(server_message):
+        def check_user_messages(message):
             user_message_begin_index = 3
-            split_message = server_message.split(" ")
+            split_line = message.split(" ")
 
-            if len(split_message) >= user_message_begin_index:
-                if split_message[user_message_begin_index] == ":.botquit":
+            if split_line[1] == "MODE":
+                name = match_regex(r"-o (\S*)", message)
+                if name is not None:
+                    try_op(name.group(1))
+
+            elif len(split_line) >= user_message_begin_index:
+                if split_line[user_message_begin_index] == ":.botquit":
                     disconnect()
                     return NextExecutionStep.RETURN
 
-                if split_message[user_message_begin_index] == ":.get":
-                    print(server_message)
-                    match = match_regex(":([^!]*)!.*?:.get ([\S ]*)", server_message)
+                if split_line[user_message_begin_index] == ":.get":
+                    print(message)
+                    match = match_regex(":([^!]*)!.*?:\.get ([\S ]*)", message)
                     name = match.group(1)
                     message = match.group(2).replace(" ", "_")
                     url = "https://en.wikipedia.org/wiki/" + message.lower()
@@ -165,6 +161,6 @@ class IrcBot:
 
 
 if __name__ == "__main__":
-    bot = IrcBot("Aus Bot Python v0", "AUS_Bot_Python", "AusBotHosting",
+    bot = IrcBot("Aus Bot Python v0", "Aus_Bot_Python", "AusBotHosting",
                  "AusBotPython", "irc.quakenet.org", "#ausbot_test")
     bot.main()

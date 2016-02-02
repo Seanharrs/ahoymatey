@@ -26,12 +26,14 @@ namespace IRC_Bot
 		/// <summary>The port the server uses</summary>
 		public int Port { get; }
 
-		public List<string> namesToOp { get; set; } = new List<string>
+		/// <summary>The names of people to make OP in the channel</summary>
+		public List<string> AdminNames { get; } = new List<string>
 		{
 			"Seanharrs", "SlayerSean",
 			"AusBotPython", "Aus_Bot_Python",
 			"AusBotFSharp", "Aus_Bot_FSharp",
-			"AusBotCPlusPlus", "Aus_Bot_CPlusPlus"
+			"AusBotCPlusPlus", "Aus_Bot_CPlusPlus",
+			"AusBotRuby", "Aus_Bot_Ruby"
 		};
 
 		/// <summary>Initialises a new IRC Bot with the parameters provided</summary>
