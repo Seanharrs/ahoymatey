@@ -93,7 +93,8 @@ namespace IRC_Bot
 				string name = Regex.Match(line, @":([^!]*)!").Groups[1].Value;
 				if(name != bot.NickName)
 				{
-					TryOp(name);
+					if(bot.AdminNames.Contains(name))
+						GiveOp(name);
 					SendData("PRIVMSG", bot.Channel + " :Hello, " + name);
 				}
 			}
@@ -124,7 +125,7 @@ namespace IRC_Bot
 				string name = Regex.Match(line, @"-o (\S*)").Groups[1].Value;
 
 				if(bot.AdminNames.Contains(name))
-					TryOp(name);
+					GiveOp(name);
 			}
 			else return NextExecutionStep.DoNothing;
 
@@ -133,13 +134,7 @@ namespace IRC_Bot
 
 		/// <summary>Makes a user a channel operator if they are supposed to be</summary>
 		/// <param name="user">The nickname to compare against valid operators</param>
-		private static void TryOp(string user)
-		{
-			if(user == bot.NickName) return;
-
-			int opIndex = bot.AdminNames.IndexOf(user);
-			if(opIndex >= 0) SendData("MODE", bot.Channel + " +o " + bot.AdminNames[opIndex]);
-		}
+		private static void GiveOp(string user) => SendData("MODE", bot.Channel + " +o " + bot.AdminNames[bot.AdminNames.IndexOf(user)]);
 
 		/// <summary>Closes the reader, writer, and connection to the server</summary>
 		private static void CloseConnection()

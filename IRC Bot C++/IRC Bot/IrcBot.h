@@ -9,7 +9,11 @@ class IrcBot
 		IrcBot();
 		IrcBot(string, string, string, string, string, string);
 		IrcBot(string, string, string, string, string, string, int);
-		~IrcBot() { delete server; }
+		~IrcBot()
+		{
+			delete server;
+			closeConnection();
+		}
 		void run();
 
 		//use enum class instead of enum to ensure enum name must be put before value
@@ -28,6 +32,7 @@ class IrcBot
 		void sendConnectionDetails();
 		NextExecutionStep readFromServer(vector<char> &, int &, int &);
 		void sleep(int time) { std::this_thread::sleep_for(std::chrono::seconds(time)); }
+		void closeConnection();
 
 		int irc; //the socket
 		struct hostent *server;

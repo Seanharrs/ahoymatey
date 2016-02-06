@@ -120,10 +120,8 @@ IrcBot::NextExecutionStep IrcBot::checkUserMessages(const string &line)
 	regex mode = regex(R"(.*?MODE #[^ ]* -o (\S*))");
 
 	if(regex_search(line, match, quit))
-	{
-		shutdown(irc, SHUT_RDWR);
 		return NextExecutionStep::RETURN;
-	}
+
 	else if(regex_search(line, match, search))
 	{
 		string base = "https://en.wikipedia.org/wiki/";
@@ -166,10 +164,7 @@ IrcBot::NextExecutionStep IrcBot::processData(const vector<char> &buf, int &coun
 	{
 		//each line is a server message, program should join after 4th message
 		++count;
-		next = checkServerMessages(line);
-		if(next == NextExecutionStep::RETURN)
-			return next;
-		if(next == NextExecutionStep::CONTINUE)
+		if(checkServerMessages(line) == NextExecutionStep::CONTINUE)
 			continue;
 
 		next = checkUserMessages(line);
@@ -222,9 +217,6 @@ IrcBot::NextExecutionStep IrcBot::readFromServer(vector<char> &buffer, int &mess
 	return NextExecutionStep::DO_NOTHING;
 }
 
-//Ignore "endless loop" warning
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 void IrcBot::run()
 {
 	int messageCount = 0, failCount = 0;
@@ -250,12 +242,16 @@ void IrcBot::run()
 	catch(...)
 	{
 		cout << "An unexpected exception occurred!" << "\n";
-		//disable both read and write permissions on the socket
-		shutdown(irc, SHUT_RDWR);
-		//close the socket
-		close(irc);
+		closeConnection();
 		sleep(10);
 		run();
 	}
 }
-#pragma clang diagnostic pop
+
+void IrcBot::closeConnection()
+{
+	//disable both read and write permissions on the socket
+	shutdown(irc, SHUT_RDWR);
+	//close the socket
+	close(irc);
+}

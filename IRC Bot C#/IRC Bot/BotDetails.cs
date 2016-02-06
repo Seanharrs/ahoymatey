@@ -27,7 +27,7 @@ namespace IRC_Bot
 		public int Port { get; }
 
 		/// <summary>The names of people to make OP in the channel</summary>
-		public List<string> AdminNames { get; } = new List<string>
+		public List<string> AdminNames => new List<string>
 		{
 			"Seanharrs", "SlayerSean",
 			"AusBotPython", "Aus_Bot_Python",

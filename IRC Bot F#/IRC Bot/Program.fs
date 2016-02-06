@@ -23,36 +23,35 @@ let currentOp user = Array.exists ((=) user) adminNames
 let connect = 
     let irc = new TcpClient(Server, Port)
     let stream = irc.GetStream()
-    let reader = new StreamReader(stream)
-    let writer = new StreamWriter(stream)
-    irc, reader, writer
+    irc, new StreamReader(stream), new StreamWriter(stream)
 
-let sendmessage (writer: StreamWriter) command parameters = 
-    writer.WriteLine(command + " " + parameters)
-    Console.WriteLine(command + " " + parameters)
-    writer.Flush()
+let sendmessage (writer: StreamWriter) command param = 
+    let message = command + " " + param
+    Console.WriteLine message
+    writer.WriteLine message
+    writer.Flush ()
 
 let tryop writer user = sendmessage writer "MODE" (Channel + " +o " + user)
 
 let welcome writer user = sendmessage writer "PRIVMSG" (Channel + " :Hello, " + user)
 
 let disconnect (irc: TcpClient) (reader: StreamReader) (writer: StreamWriter) =
-    reader.Close()
-    writer.Close()
-    irc.Close()
+    reader.Close ()
+    writer.Close ()
+    irc.Close ()
     ()
 
 let checkservercommands (writer: StreamWriter) (line: string) =
     match line with
-    | l when l.Contains("PING") 
-        -> Console.WriteLine(line)
+    | l when l.Contains "PING"
+        -> Console.WriteLine line
            sendmessage writer "PONG" (l.Split([|' '|]).[1])
            true
-    | l when l.Contains("No ident response")
+    | l when l.Contains "No ident response"
         -> sendmessage writer "JOIN" Channel
            true
-    | l when l.Contains("JOIN") 
-        -> Console.WriteLine(line)
+    | l when l.Contains "JOIN"
+        -> Console.WriteLine line
            let name = Regex.Match(line, @"(:[^!]*)!").Groups.[1].Value.Remove(0, 1)
            if name <> Nick then tryop writer name
                                 welcome writer name
@@ -62,19 +61,19 @@ let checkservercommands (writer: StreamWriter) (line: string) =
 let checkusercommands (writer: StreamWriter) (line: string) =
     match line with
     | l when l.Contains ".get"
-        -> Console.WriteLine(line)
+        -> Console.WriteLine line
            let regexmatch = Regex.Match(line, @":([^!]*)!.*?:\.get ([\S ]*)")
            let name = regexmatch.Groups.[1].Value
            let query = regexmatch.Groups.[2].Value.Replace(' ', '_')
            let url = "https://en.wikipedia.org/wiki/" + query.ToLower()
            sendmessage writer "PRIVMSG" (Channel + " :" + name + ": " + url)
-    | l when (l.Contains "MODE" && not (l.Contains "PRIVMSG"))
-        -> Console.WriteLine(line)
+    | l when (l.Contains "MODE") && not (l.Contains "PRIVMSG")
+        -> Console.WriteLine line
            let name = Regex.Match(line, @"-o (\S*)").Groups.[1].Value
            if currentOp name then tryop writer name
     | _ -> ()
 
-let (|Quit|NoQuit|) (line: string) = if line.Contains(".botquit") then Quit else NoQuit
+let (|Quit|NoQuit|) (line: string) = if line.Contains ".botquit" then Quit else NoQuit
 
 [<EntryPoint>]
 let rec main argv =
@@ -91,16 +90,16 @@ let rec main argv =
             let mutable count = 0
             while line <> null && not quitcommand do
                 line <- reader.ReadLine()
-                if(count = 4) then sendmessage writer "JOIN" Channel
+                if count = 4 then sendmessage writer "JOIN" Channel
                 match line with
                 | Quit -> quitcommand <- true
                 | NoQuit
                     -> let foundcommand = checkservercommands writer line
-                       if(not foundcommand) then checkusercommands writer line
+                       if not foundcommand then checkusercommands writer line
                 count <- count + 1
 
     with
-    | _ -> Console.WriteLine("An exception occurred!")
-           Thread.Sleep(10000)
+    | _ -> Console.WriteLine "An exception occurred!"
+           Thread.Sleep 10000
            main argv |> ignore
     0
