@@ -4,102 +4,134 @@ open System.Threading
 open System.Net.Sockets
 open System.Text.RegularExpressions
 
-let Real = "Aus Bot FSharp v0"
-let User = "Aus_Bot_FSharp"
-let Host = "AusBotHosting"
-let Nick = "AusBotFSharp"
-let Server = "irc.quakenet.org"
-let Channel = "#ausbot_test"
-let Port = 6667
+type Details(realName: string, userName: string, hostName: string, 
+             nickName: string, serverName: string, channelName: string, 
+             serverPort: int, namesOfAdmin: string []) =
+    let real = realName
+    let user = userName
+    let nick = nickName
+    let host = hostName
+    let server = serverName
+    let channel = channelName
+    let port = serverPort
+    let adminNames = namesOfAdmin
+    
+    member this.Real = real
+    member this.User = user
+    member this.Nick = nick
+    member this.Host = host
+    member this.Server = server
+    member this.Channel = channel
+    member this.Port = port
+    member this.AdminNames = adminNames
 
-let adminNames = [| "Seanharrs"; "SlayerSean";
-                    "AusBotPython"; "Aus_Bot_Python";
-                    "AusBotCSharp"; "Aus_Bot_CSharp";
-                    "AusBotCPlusPlus"; "Aus_Bot_CPlusPlus";
-                    "AusBotRuby"; "Aus_Bot_Ruby" |]
+type IrcBot(botDetails: Details) as self =
+    let bot = botDetails
+    let irc = new TcpClient(bot.Server, bot.Port)
+    let stream = irc.GetStream ()
+    let reader = new StreamReader (stream)
+    let writer = new StreamWriter (stream)
+    
+    let (|Quit|NoQuit|) (message: string) = if message.Contains ".botquit" then Quit else NoQuit
 
-let currentOp user = Array.exists ((=) user) adminNames
+    let (|IsMe|IsAdmin|IsOther|) username =
+        match username with
+        | name when name = bot.Nick -> IsMe
+        | name when self.IsAdmin name -> IsAdmin
+        | _ -> IsOther
+    
+    member this.Real = bot.Real
+    member this.User = bot.User
+    member this.Nick = bot.Nick
+    member this.Host = bot.Host
+    member this.Server = bot.Server
+    member this.Channel = bot.Channel
+    member this.Port = bot.Port
+    member this.AdminNames = bot.AdminNames
 
-let connect = 
-    let irc = new TcpClient(Server, Port)
-    let stream = irc.GetStream()
-    irc, new StreamReader(stream), new StreamWriter(stream)
+    member this.ReadLine () = reader.ReadLine ()
 
-let sendmessage (writer: StreamWriter) command param = 
-    let message = command + " " + param
-    Console.WriteLine message
-    writer.WriteLine message
-    writer.Flush ()
+    member this.Disconnect () =
+        reader.Close ()
+        writer.Close ()
+        irc.Close ()
 
-let tryop writer user = sendmessage writer "MODE" (Channel + " +o " + user)
+    member this.SendData command args =
+        let message = command + " " + args
+        Console.WriteLine message
+        writer.WriteLine message
+        writer.Flush ()
+        
+    member this.IsAdmin user = bot.AdminNames |> Array.contains user
+    member this.MakeAdmin user = bot.Channel + " +o " + user |> self.SendData "MODE"
 
-let welcome writer user = sendmessage writer "PRIVMSG" (Channel + " :Hello, " + user)
+    member this.WelcomeUser user = bot.Channel + " :Hello, " + user |> self.SendData "PRIVMSG"
+    
+    member this.GetMatchValue (group: int) (m: Match) = m.Groups.[group].Value
+    member this.GetRegexValue text pattern group = Regex.Match(text, pattern) |> self.GetMatchValue group
 
-let disconnect (irc: TcpClient) (reader: StreamReader) (writer: StreamWriter) =
-    reader.Close ()
-    writer.Close ()
-    irc.Close ()
-    ()
+    member this.ParseMessage (message: string) =
+        match message with
+        | msg when msg.Contains "PING" 
+            -> Console.WriteLine msg
+               msg.Split(' ').[1] |> self.SendData "PONG"
+               false
+        | msg when msg.Contains "No ident response" 
+            -> self.SendData "JOIN" bot.Channel
+               false
+        | msg when msg.Contains "JOIN"
+            -> Console.WriteLine msg
+               let user = (self.GetRegexValue msg @"(:[^!]*)!" 1).Remove(0, 1)
+               match user with
+               | IsAdmin -> self.MakeAdmin user
+                            self.WelcomeUser user
+               | IsOther -> self.WelcomeUser user
+               | IsMe -> ()
+               false
+        | msg when msg.Contains ".get"
+            -> Console.WriteLine msg
+               let regexmatch = Regex.Match(msg, @":([^!]*)!.*?:\.get ([\S ]*)")
+               let name = self.GetMatchValue 1 regexmatch
+               let query = (self.GetMatchValue 2 regexmatch).Replace(' ', '_')
+               let url = "https://en.wikipedia.org/wiki/" + query.ToLower ()
+               bot.Channel + " :" + name + ": " + url |> self.SendData "PRIVMSG"
+               false
+        | msg when msg.Contains "MODE" && msg.Contains "PRIVMSG" |> not
+            -> Console.WriteLine msg
+               let name = Regex.Match(msg, @"-o (\S*)").Groups.[1].Value
+               if self.IsAdmin name then self.MakeAdmin name
+               false
+        | Quit -> true
+        | _ -> false
+    
+    member this.DoWork calls =
+        if calls = 4 then self.SendData "JOIN" bot.Channel
 
-let checkservercommands (writer: StreamWriter) (line: string) =
-    match line with
-    | l when l.Contains "PING"
-        -> Console.WriteLine line
-           sendmessage writer "PONG" (l.Split([|' '|]).[1])
-           true
-    | l when l.Contains "No ident response"
-        -> sendmessage writer "JOIN" Channel
-           true
-    | l when l.Contains "JOIN"
-        -> Console.WriteLine line
-           let name = Regex.Match(line, @"(:[^!]*)!").Groups.[1].Value.Remove(0, 1)
-           if name <> Nick then tryop writer name
-                                welcome writer name
-           true
-    | _ -> false
-
-let checkusercommands (writer: StreamWriter) (line: string) =
-    match line with
-    | l when l.Contains ".get"
-        -> Console.WriteLine line
-           let regexmatch = Regex.Match(line, @":([^!]*)!.*?:\.get ([\S ]*)")
-           let name = regexmatch.Groups.[1].Value
-           let query = regexmatch.Groups.[2].Value.Replace(' ', '_')
-           let url = "https://en.wikipedia.org/wiki/" + query.ToLower()
-           sendmessage writer "PRIVMSG" (Channel + " :" + name + ": " + url)
-    | l when (l.Contains "MODE") && not (l.Contains "PRIVMSG")
-        -> Console.WriteLine line
-           let name = Regex.Match(line, @"-o (\S*)").Groups.[1].Value
-           if currentOp name then tryop writer name
-    | _ -> ()
-
-let (|Quit|NoQuit|) (line: string) = if line.Contains ".botquit" then Quit else NoQuit
+        let quit = self.ReadLine () |> self.ParseMessage
+        if not quit then calls + 1 |> self.DoWork
 
 [<EntryPoint>]
-let rec main argv =
-    try
-        let irc, reader, writer = connect
+let main argv =
+    let bot =
+        new IrcBot(
+            new Details(
+                "Aus Bot FSharp v0",
+                "Aus_Bot_FSharp",
+                "AusBothosting",
+                "AusBotFSharp",
+                "irc.quakenet.org",
+                "#ausbot_test",
+                6667,
+                [| "Seanharrs"; "SlayerSean";
+                "AusBotPython"; "Aus_Bot_Python";
+                "AusBotCSharp"; "Aus_Bot_CSharp";
+                "AusBotCPlusPlus"; "Aus_Bot_CPlusPlus";
+                "AusBotRuby"; "Aus_Bot_Ruby" |]
+            )
+        )
+        
+    bot.SendData "NICK" bot.Nick
+    bot.User + " " + bot.Host + " " + bot.Server + " :" + bot.Real |> bot.SendData "USER"
 
-        sendmessage writer "NICK" Nick
-        let param = User + " " + Host + " " + Server + " :" + Real
-        sendmessage writer "USER" param
-
-        let mutable quitcommand = false
-        while not quitcommand do
-            let mutable line = ""
-            let mutable count = 0
-            while line <> null && not quitcommand do
-                line <- reader.ReadLine()
-                if count = 4 then sendmessage writer "JOIN" Channel
-                match line with
-                | Quit -> quitcommand <- true
-                | NoQuit
-                    -> let foundcommand = checkservercommands writer line
-                       if not foundcommand then checkusercommands writer line
-                count <- count + 1
-
-    with
-    | _ -> Console.WriteLine "An exception occurred!"
-           Thread.Sleep 10000
-           main argv |> ignore
+    bot.DoWork 1
     0
